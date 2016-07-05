@@ -5,6 +5,6 @@ Adapted from saeedafshari/QuickDraw - real-time communication using Javascript, 
 
 Currently hosted at https://maps.mrbcleague.com:8443
 
-![]({{site.baseurl}}/https://mrbcleague.com/images/mapstratlanding.PNG)
+![](https://mrbcleague.com/images/mapstratlanding.PNG)
 
-![]({{site.baseurl}}/https://mrbcleague.com/images/mapstrat.PNG)
+![](https://mrbcleague.com/images/mapstrat.PNG)
