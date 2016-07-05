@@ -1,14 +1,13 @@
 {
-  "name": "QuickDraw",
+  "name": "mapstrat",
   "version": "1.0.0",
-  "description": "Collaborative Drawing Board",
+  "description": "MRBC Map Strat",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Saeed Afshari",
-  "license": "MIT",
+  "author": "ShelleMech",
+  "license": "ISC",
   "dependencies": {
     "colors": "^1.0.3",
     "express": "^4.11.2",

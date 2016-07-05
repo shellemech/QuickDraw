@@ -1,24 +1,26 @@
 ﻿//Web server
 var web = require("./server/web.js");
-web.start(8081);
+web.start(8443);
 
 //Main logic
 var socket;
 var rooms = [];
 var roomIds = {};
 
+// get entire room including data points and map
 function getRoom(roomId)
-{
+{	
     if (!(roomId in roomIds))
     {
         roomIds[roomId] = rooms.length;
         rooms.push([]);
-    }
+    } 
     return rooms[roomIds[roomId]];
 }
 
+//send room back to client
 function sendRoom(roomId)
-{
+{ 
     web.io.emit("servermessage", {
         "room": roomId,
         "command": "send_room",
@@ -26,10 +28,11 @@ function sendRoom(roomId)
     });
 }
 
+//add data points (if not the pin type) to the room array
 function draw(msg)
 {
     var room = getRoom(msg["room"]);
-    room.push(msg["data"]);
+    if (msg["data"]['shape'] != "pin") room.push(msg["data"]);
     web.io.emit("servermessage", {
         "room": msg["room"],
         "command": "draw",
@@ -37,11 +40,25 @@ function draw(msg)
     });
 }
 
+//add map to room array
+function map(msg)
+{
+    var room = getRoom(msg["room"]);
+    room.push(msg["mapURL"]);
+    web.io.emit("servermessage", {
+        "room": msg["room"],
+        "command": "send_map",
+        "mapURL": msg["mapURL"]
+    });
+}
+
+//clear room data array
 function clear(msg)
 {
     var room = getRoom(msg["room"]);
-    while (room.length) room.pop();
-
+    while (room.length) {
+		room.pop();
+	}
     web.io.emit("servermessage", {
         "room": msg["room"],
         "command": "clear"
@@ -66,6 +83,7 @@ function handleMessage(msg)
         if (msg["command"] == "draw") draw(msg);
         if (msg["command"] == "join") join(msg);
         if (msg["command"] == "clear") clear(msg);
+		if (msg["command"] == "map") map(msg);
     }
     catch (err)
     {
