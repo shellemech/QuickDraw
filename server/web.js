@@ -12,8 +12,10 @@ var app = express();
 var https = require('https');
 
 //var io = require('socket.io')(https);
-var key = fs.readFileSync('/etc/ssl/certs/mrbcleague_com.key');
-var cert = fs.readFileSync('/etc/ssl/certs/maps.mrbcleague.com.crt')
+//var key = fs.readFileSync('/etc/ssl/certs/mrbcleague_com.key');
+var key = fs.readFileSync('/etc/letsencrypt/live/mrbcleague.com/privkey.pem');
+//var cert = fs.readFileSync('/etc/ssl/certs/maps.mrbcleague.com.crt')
+var cert = fs.readFileSync('/etc/letsencrypt/live/mrbcleague.com/cert.pem');
 var https_options = {
     key: key,
     cert: cert
