@@ -1,25 +1,25 @@
 ﻿//Configurations
-var PORT = 8443;
+var PORT = 80;
 var DEFAULT_PAGE = "/index.html";
 var HOST = 'localhost';
-var serverPort = 8443;
+//var serverPort = 8443;
 
 //Setup
 var fs = require('fs');
 var express = require('express');
 var app = express();
 //var app = require('express')();
-var https = require('https');
+//var https = require('https');
 
 //var io = require('socket.io')(https);
 //var key = fs.readFileSync('/etc/ssl/certs/mrbcleague_com.key');
-var key = fs.readFileSync('/etc/letsencrypt/live/mrbcleague.com/privkey.pem');
+//var key = fs.readFileSync('/etc/letsencrypt/live/mrbcleague.com/privkey.pem');
 //var cert = fs.readFileSync('/etc/ssl/certs/maps.mrbcleague.com.crt')
-var cert = fs.readFileSync('/etc/letsencrypt/live/mrbcleague.com/cert.pem');
-var https_options = {
-    key: key,
-    cert: cert
-};
+//var cert = fs.readFileSync('/etc/letsencrypt/live/mrbcleague.com/cert.pem');
+//var https_options = {
+//    key: key,
+//    cert: cert
+//};
 app.use(express.static('client'));
 
 var options = {
@@ -34,13 +34,14 @@ var options = {
     }
 };
 
-var server = https.createServer(https_options, app);
+//var server = https.createServer(https_options, app);
+var server = http.createServer(options, app);
 var io = require('socket.io')(server);
 
 exports.start = function (port) {
     PORT = port;
     //Start listening
-    server.listen(PORT, '192.223.29.213', function() {
+    server.listen(PORT,HOST, function() {
   	console.log('server up and running at %s port', port);
 	});
     //var server = https.listen(PORT, function () {
