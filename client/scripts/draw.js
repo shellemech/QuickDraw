@@ -2,7 +2,7 @@
 	//Wipe data points and resend map
 	function wipeRemap() {
 		mapPNG=$('#map_select').find(":selected").val();
-		mapURL="https://mrbcleague.com/modules/casters/images/"+mapPNG;
+		mapURL="/maps/"+mapPNG;
 		clear_room();
 		send_map(mapURL);
 	}
@@ -24,13 +24,13 @@
 		$(".tool_button.active").removeClass("active");
 		$(this).addClass("active");
 		thisid = $(this).attr("id");
-		console.log(thisid);
-		// change cursor 
-		if (thisid == "pin") $('#canvaspin').css('cursor', 'url("https://mrbcleague.com/images/mappin-cur.png") 10 20, alias');
-		else if (thisid == "era") $('#canvaspin').css('cursor', 'url("https://mrbcleague.com/images/eraser-cur.png") 5 20, not-allowed');
-		else if (/^clan.*/.test(thisid)) $('#canvaspin').css('cursor', 'url("https://mrbcleague.com/images/pixelmechs/'+thisid+'.png") 5 20, crosshair');
-		else if (/^is.*/.test(thisid)) $('#canvaspin').css('cursor', 'url("https://mrbcleague.com/images/pixelmechs/'+thisid+'.png") 5 20, crosshair');
-		else if (/^rad.*\d/.test(thisid)) $('#canvaspin').css('cursor', 'url("https://mrbcleague.com/images/marker-cur.png") 5 20, crosshair');
+		//console.log(thisid);
+		// change cursor
+		if (thisid == "pin") $('#canvaspin').css('cursor', 'url("/images/mappin-cur.png") 10 20, alias');
+		else if (thisid == "era") $('#canvaspin').css('cursor', 'url("/images/eraser-cur.png") 5 20, not-allowed');
+		else if (/^clan.*/.test(thisid)) $('#canvaspin').css('cursor', 'url("/pixelmechs/'+thisid+'.png") 5 20, crosshair');
+		else if (/^is.*/.test(thisid)) $('#canvaspin').css('cursor', 'url("/pixelmechs/'+thisid+'.png") 5 20, crosshair');
+		else if (/^rad.*\d/.test(thisid)) $('#canvaspin').css('cursor', 'url("/images/marker-cur.png") 5 20, crosshair');
 	});
 
 	//Select map text
@@ -41,9 +41,9 @@
 	ctx.fillText("Select a map...",390,250);
 
 	//tooltip
-	$('[title!=""]').qtip({ 
+	$('[title!=""]').qtip({
 		content: {
-			attr: 'title' 
+			attr: 'title'
 		},
 		style: { classes: 'qtip-tipsy' }
 	});
@@ -54,7 +54,7 @@ var ROOM = "0";
 var COLOR = "#ff6600";
 var RADIUS = 5;
 var SHAPE = "circle";
-var mapImg = new Image();  
+var mapImg = new Image();
 
 var socket, canvas, context, canvasback, contextback, canvaspin, contextpin;
 
@@ -99,7 +99,7 @@ function get_draw(draw_data)
 				context.fillStyle = draw_data["color"];
 				context.fill();
 			}
-			break;	
+			break;
 		case "eraser":
 			{
 				draw_data["x"] = (draw_data["x"] / 1000.0) * canvas.width;
@@ -112,8 +112,8 @@ function get_draw(draw_data)
 				context.fill();
 				context.globalCompositeOperation = "source-over";
 			}
-			break;	
-		case "pin": 
+			break;
+		case "pin":
 			{
 				draw_data["x"] = (draw_data["x"] / 1000.0) * canvaspin.width;
 				draw_data["y"] = (draw_data["y"] / 1000.0) * canvaspin.height;
@@ -128,9 +128,9 @@ function get_draw(draw_data)
 						for (var i = blankImg.data.length; --i >= 0; )
 						blankImg.data[i] = 0;
 					contextpin.putImageData(blankImg, draw_data["x"]-15, draw_data["y"]-40);
-					}, 3000);	
+					}, 3000);
 				}
-				pinImg.src = "https://mrbcleague.com/images/mappin.png";
+				pinImg.src = "/images/mappin.png";
 			}
 			break;
 	}
@@ -144,7 +144,7 @@ function get_draw(draw_data)
 		mechImg.onload = function () {
 			context.drawImage(mechImg, draw_data["x"]-5, draw_data["y"]-20, 55, 70);
 		}
-		mechImg.src = "https://mrbcleague.com/images/pixelmechs/"+thisshape+".png";
+		mechImg.src = "/images/pixelmechs/"+thisshape+".png";
 	}
 	if (/^is/.test(thisshape))
 	{
@@ -154,7 +154,7 @@ function get_draw(draw_data)
 		mechImg.onload = function () {
 			context.drawImage(mechImg, draw_data["x"]-5, draw_data["y"]-20, 55, 70);
 		}
-		mechImg.src = "https://mrbcleague.com/images/pixelmechs/"+thisshape+".png";
+		mechImg.src = "/images/pixelmechs/"+thisshape+".png";
 	}
 
 
@@ -186,7 +186,7 @@ function get_room(room_data)
 		try {
 			if (e.indexOf("png") > -1) get_drawMap(e);
 		}
-		catch(err) { 
+		catch(err) {
 			//console.log(err)
 		}
 	});

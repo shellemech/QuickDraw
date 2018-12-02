@@ -9,18 +9,18 @@ var roomIds = {};
 
 // get entire room including data points and map
 function getRoom(roomId)
-{	
+{
     if (!(roomId in roomIds))
     {
         roomIds[roomId] = rooms.length;
         rooms.push([]);
-    } 
+    }
     return rooms[roomIds[roomId]];
 }
 
 //send room back to client
 function sendRoom(roomId)
-{ 
+{
     web.io.emit("servermessage", {
         "room": roomId,
         "command": "send_room",
@@ -92,6 +92,6 @@ function handleMessage(msg)
 }
 
 web.io.on('connection', function (socket) {
-    console.log((new Date()) + ' Connection established.');
+    //console.log((new Date()) + ' Connection established.');
     socket.on("message", handleMessage);
 });
