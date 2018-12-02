@@ -3,7 +3,7 @@
 
 Adapted from saeedafshari/QuickDraw - real-time communication using Javascript, Node.js and Socket.io 
 
-Currently hosted at https://maps.mrbcleague.com:8443
+Currently hosted at https://maps.mrbcleague.com
 
 ![](https://mrbcleague.com/images/mapstratlanding.PNG)
 
