@@ -1,6 +1,6 @@
 ﻿//Web server
 var web = require("./server/web.js");
-web.start(8443);
+web.start();
 
 //Main logic
 var socket;

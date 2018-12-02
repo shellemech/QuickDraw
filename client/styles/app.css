@@ -1,13 +1,189 @@
-﻿html, body {
-    height:100%;
-    width:100%;
-    margin:0;
-    padding:0;
-}
+﻿/* reset */
+* { margin: 0; padding: 0; border: 0; outline: none; text-decoration: none; color:#8e8e8e; font-family: 'Open Sans', sans-serif; text-transform:none; letter-spacing:normal; font-size: 12.5px; font-weight: normal; font-style: normal; line-height: 1.4;
+	* }
 
-body {
-    font-family: 'Segoe UI', sans-serif;
-}
+	h1 {font-size:           26px; font-family: 'Wallpoet', cursive; text-transform:uppercase;}
+	h2 {font-size:           22px; font-family: 'Wallpoet', cursive; text-transform:uppercase;}
+	h3 {font-size:           18px; font-family: 'Wallpoet', cursive; text-transform:uppercase;}
+	h4 {font-size:           16px; font-family: 'Wallpoet', cursive; text-transform:uppercase;}
+	h5 {font-size:           14px; font-family: 'Wallpoet', cursive; text-transform:uppercase;}
+	h6 {font-size:           12px; font-family: 'Wallpoet', cursive; text-transform:uppercase;}
 
-span {
-}
+	html, body {
+		height:100%;
+		width:100%;
+		margin:0;
+		padding:0;
+		margin:  0;
+		background: #1c1c1c url(https://static.mwomercs.com/img/gallery/8b979aa0ecf31babfa26585bde6f0135.jpg) top center fixed no-repeat;
+		padding: 0;
+	}
+
+	img {
+		vertical-align: middle;
+		border:0;
+	}
+
+	a {
+		background-color:       inherit;
+		color:              #dab526;
+		text-decoration:        none;
+	}
+
+	select {
+		border: 1px solid #1a1a1a;
+		padding: 0.15em;
+		font-size: 12px;
+		background: #333;
+		color: #d6d6d6;
+	}
+
+	.xo-formbuttons, .formButton, button {
+		border : solid 1px #1a1a1a;
+		font-size : 14px;
+		height: 23px;
+		color : #dab926;
+		padding : 1px 17px;
+		background : #1a1a1a;
+		background: -webkit-linear-gradient(#262626, #303030);
+		background: -moz-linear-gradient(#262626, #303030);
+		background: linear-gradient(#262626, #303030);
+		filter : progid:DXImageTransform.Microsoft.gradient( startColorstr='#5f6166', endColorstr='#00060a',GradientType=0 );
+		font-variant: small-caps;
+		-moz-border-radius: 8px;
+		-webkit-border-radius: 8px;
+		border-radius: 8px;
+	}
+
+	.gold {
+		color: #dab526!important;
+	}
+
+	.offwhite {
+		color: #d6d6d6!important;
+	}
+
+	.red {
+		color: #B43030;    
+	}
+
+	.yel {
+		color: #dab526;    
+	}
+
+	.header {
+		display: inline-block;
+		text-decoration: none;
+		font-size: 30px; 
+		font-family: 'Wallpoet', cursive; 
+		text-transform:uppercase;
+		text-shadow: 1.5px 1.5px 0 #4d4d4d, -1.5px -1.5px 0 #4d4d4d, -1.5px -1.5px 0 #4d4d4d, -1.5px 1.5px 0 #4d4d4d, 1.5px -1.5px 0 #4d4d4d;
+		transition: all 400ms ease-in-out;
+	}
+
+	.header--pushDown {
+		text-shadow: 1.5px 1.5px 0 #333, 0px 1.5px 0 #333, -1.5px -1.5px 0 #333, -1.5px -1.5px 0 #333, -1.5px 1.5px 0 #333, 1.5px -1.5px 0 #333, 0.77782px 0.77782px 0 #4d4d4d, 1.55563px 1.55563px 0 #4d4d4d, 2.33345px 2.33345px 0 #4d4d4d, 3.11127px 3.11127px 0 #4d4d4d, 3.88909px 3.88909px 0 #4d4d4d, 4.6669px 4.6669px 0 #4d4d4d, 5.44472px 5.44472px 0 #4d4d4d, 6.22254px 6.22254px 0 #4d4d4d, 7.00036px 7.00036px 0 #4d4d4d, 7.77817px 7.77817px 0 #4d4d4d;
+	}
+
+	#logo {
+		width:20em;
+		height: auto;
+	}
+
+	#beta {
+		position: absolute;
+		top: 70%;
+		text-align: center;
+		width:100%;
+	}
+
+	#content {
+		position:absolute;
+		top: 50%;
+		left: 50%;
+		transform: translateX(-50%) translateY(-50%);
+		width: 50em;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		text-align:center;
+	}
+
+	.instructions {
+		font-size:1.1em;
+		color: #d6d6d6;
+
+	}
+	.subt {
+		font-size: 72%;
+		text-transform: uppercase;
+		letter-spacing: 0.13em;
+		padding-left: 35px;
+	}
+
+	.codebox {
+		width: 50%;
+		height: 3em;
+		text-align:center;
+		align-content: center;
+		border-radius:0.5em;
+		border-width:0.1em;
+		border-color:#8e8e8e;
+		border-style:solid;
+	}
+
+	#btn_connect {
+		margin-top: 2em;
+		width: 30%;
+		height: 3em;
+		text-align:center;
+		align-content: center;
+	}
+	#txt_room {
+		font-size: 14px;
+		background-color: #3b3b3b;
+		color: #d6d6d6;
+	}
+
+	#footer {
+		position:absolute;
+		bottom: 1em;
+		width:100%;
+
+	}
+
+	#footertext {
+		text-align:center;
+		font-weight:normal;
+	}
+	#opti {
+		padding: 10px;
+	}
+	.normalboxes {
+		background-color: #303030;
+		border: 1px solid #1a1a1a;
+		-moz-border-radius: 6px;
+		-webkit-border-radius: 6px;
+		border-radius: 6px;
+		padding:10px;
+	}
+	canvas {
+		/* without 'display' the scrollbars will appear when setting width/height using window.innerHeight */
+		display: block;
+		transition: all 1s ease-in-out;
+		-webkit-transition: all 1s ease-in-out;
+	}
+
+	/* Custom scrollbar */
+
+	::-webkit-scrollbar {
+		width: 14px;
+	}
+	::-webkit-scrollbar-track {
+		background-color: #303030;
+		border-left: 1px solid #1a1a1a;
+	}
+	::-webkit-scrollbar-thumb {
+		background-color: #1a1a1a;
+	}
+

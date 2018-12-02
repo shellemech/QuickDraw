@@ -2,407 +2,168 @@
 
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <title>MRBC Map Strat</title>
-    <link rel="stylesheet" href="httpS://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.1/jquery.qtip.min.css" type="text/css" />
-	<link rel="stylesheet" type="text/css" media="screen" title="Color" href="https://mrbcleague.com/themes/mrbcleague/css/style.css" />
-	<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-	<link href='https://fonts.googleapis.com/css?family=Wallpoet' rel='stylesheet' type='text/css'>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.2.0/socket.io.min.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-	<script src="httpS://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.1/jquery.qtip.min.js"></script>
-    <script src="/scripts/draw.js"></script>
-	<script>
-$( document ).ready(function() {
-	//Wipe data points and resend map
-	function wipeRemap() {
-		mapPNG=$('#map_select').find(":selected").val();
-                mapURL="https://mrbcleague.com/modules/casters/images/"+mapPNG;
-                clear_room();
-                send_map(mapURL);
-	}
+<meta charset="utf-8" />
+<title>MRBC Map Strat</title>
+<link rel="stylesheet" href="httpS://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.1/jquery.qtip.min.css" type="text/css" />
+<link rel="stylesheet" type="text/css" media="screen" title="Color" href="/styles/app.css" />
+<link rel="stylesheet" type="text/css" media="screen" title="Color" href="/styles/draw.css" />
+<link rel="shortcut icon" type="image/ico" href="icons/favicon.ico" />
+<link rel="icon" type="image/png" href="/icons/favicon.png" />
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Wallpoet' rel='stylesheet' type='text/css'>
+<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script src="httpS://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.1/jquery.qtip.min.js"></script>
+<script src="/scripts/draw.js"></script>
 
-	$('#map_select').on('change', function() {
-		wipeRemap();
-	});
-
-	$('#wipe').click(function(){
-		wipeRemap();
-	});
-	
-	//button highlight
-	$('.color_button').click(function(){
-		$(".color_button.active").removeClass("active");
-		$(this).addClass("active");
-	});
-	$('.tool_button').click(function(){
-		$(".tool_button.active").removeClass("active");
-		$(this).addClass("active");
-		thisid = $(this).attr("id");
-		console.log(thisid);
-		// change cursor 
-		if (thisid == "pin") $('#canvaspin').css('cursor', 'url("https://mrbcleague.com/images/mappin-cur.png") 10 20, alias');
-		else if (thisid == "era") $('#canvaspin').css('cursor', 'url("https://mrbcleague.com/images/eraser-cur.png") 5 20, not-allowed');
-		else if (/^clan.*/.test(thisid)) $('#canvaspin').css('cursor', 'url("https://mrbcleague.com/images/pixelmechs/'+thisid+'.png") 5 20, crosshair');
-		else if (/^is.*/.test(thisid)) $('#canvaspin').css('cursor', 'url("https://mrbcleague.com/images/pixelmechs/'+thisid+'.png") 5 20, crosshair');
-		else if (/^rad.*\d/.test(thisid)) $('#canvaspin').css('cursor', 'url("https://mrbcleague.com/images/marker-cur.png") 5 20, crosshair');
-	});
-
-	//Select map text
-	var tempcanvas = document.getElementById("canvasback");
-	var ctx = tempcanvas.getContext("2d");
-	ctx.font = "30px Wallpoet";
-	ctx.fillStyle = "#d6d6d6";
-	ctx.fillText("Select a map...",390,250);
-	
-	//tooltip
-	$('[title!=""]').qtip({ 
-		content: {
-			attr: 'title' 
-		},
-		style: { classes: 'qtip-tipsy' }
-	});
-	});
-</script>
-
-    <style type="text/css">
-        body, canvas {
-           margin:0;
-		   padding:0; 
-        }
-		#pagebox {
-			width: 1350px;
-			
-			margin-left: auto;
-			margin-right: auto;
-		}
-		.wrapper {
-			position: relative;
-			top: -12px;
-			left: 60px;
-			width: 950px;
-			height: 950px;
-		}	
-        #canvas, #canvasback, #canvaspin {
-            width: 100%;
-            height: 100%;
-			position: absolute;
-			top: 0px;
-			left: 0px;
-			cursor: url("https://mrbcleague.com/images/marker-cur.png") 5 20, crosshair;
-		}
-		#leftbar {
-			float: left;
-			height: 100%;
-			width: 50px;
-		}
-		#leftbar.normalboxes{
-			border:none;
-			background: rgba(41,41,41,0.8) none;
-		}
-		#rightbar {
-			float: right;
-			width: 360px;
-		}
-		#panel_tools_mechs_c.normalboxes{
-			border:none;
-			background: rgba(41,41,41,0.8) none;
-			width: 40px;
-			float: right;
-			border:none;
-			background: rgba(41,41,41,0.8) none;
-			margin: 2px;
-		}
-		#panel_tools_mechs_is.normalboxes{
-			border:none;
-			background: rgba(41,41,41,0.8) none;
-			width: 88px;
-			float: right;
-			border:none;
-			background: rgba(41,41,41,0.8) none;
-			margin: 2px;
-		}
-		.mechheadingC {
-			width: 24px;
-			margin-left: auto;
-			margin-right: auto;
-		}
-		.mechheadingI {
-			width: 17px;
-			margin-left: auto;
-			margin-right: auto;
-		}
-        #panel_header {
-            padding: 2px;
-            width: 100%;
-			height: 80px;
-            float:right;
-        }
-		#panel_header.normalboxes{
-			border:none;
-			background: rgba(41,41,41,0.8) none;
-		}
-		#panel_tools_col {
-			float: left;
-			padding: 3px;
-        }
-		#panel_tools_rad {
-            float: left;
-			padding: 3px;
-			padding-top: 15px;
-        }
-		 #headtitle {
-			padding: 5px;
-			margin-top: -10px;
-			padding-right:10px;
-        }
-		#mapselect {
-			padding-right:5px;
-		}
-		#map_select { 
-			width: 360px;
-			height:30px;
-			font-family: Wallpoet;
-			font-size:16px;
-			text-transform: uppercase;
-		}
-		#map_select option{
-			font-family: Wallpoet;
-			font-size:14px;
-			text-transform: uppercase;
-		}
-		button {
-			height: 30px;
-			width:37px;
-			margin:2px;
-			padding:2px;
-			background: #3b3b3b;
-			background: -webkit-linear-gradient(#3b3b3b,#303030);
-			background: -moz-linear-gradient(#3b3b3b,#303030);
-			background: linear-gradient(#3b3b3b,#303030);
-		}
-		.wipe {
-			color: #dab926;	
-			font-size: 15px;
-			padding-left:0px;
-		}
-		#wipe {
-			padding-left: 0px;
-			margin-top: 5px;
-			margin-left: -8px;
-			margin-bottom: 10px;
-			width: 60px;
-			height: 50px;
-		}		
-		.circle {
-			border-radius: 50%;
-			margin: 0 auto;
-		}
-		.type1 {
-			width: 2px;
-			height: 2px;
-			background: #ccc;
-			border: 1px solid #3b3b3b;
-		}
-		.type3 {
-			width: 6px;
-			height: 6px;
-			background: #ccc;
-			border: 1px solid #3b3b3b;
-		}
-		.type5 {
-			width: 10px;
-			height: 10px;
-			background: #ccc;
-			border: 1px solid #3b3b3b;
-		}
-		.type7 {
-			width: 14px;
-			height: 14px;
-			background: #ccc;
-			border: 1px solid #3b3b3b;
-		}
-		.active {
-			border: 2px solid #505050;
-		}
-		.radius_button {
-			width:40px;
-		}
-		#notes {
-			margin-top: 2px; 
-			margin-bottom: 2px; 
-			height: 100px;
-			width: 1016px;
-		}
-		.spacer {
-			margin-bottom:20px;
-		}
-		.spare {
-			margin-bottom:1px;
-		}
-    </style>
 </head>
 
 <body>
 <br>
 <div class="normalboxes" id="pagebox">
-	<div id="leftbar" class="normalboxes">
-		<div id="panel_tools_col">
-			<button class="action_button wipe" id="wipe"><div class="wipe">Wipe</div></button>
-            <button class="color_button active" style="background:#ff6600" onclick="change_color('#ff6600');">&nbsp;</button>
-            <button class="color_button" style="background:white" onclick="change_color('white');">&nbsp;</button>
-            <button class="color_button" style="background:#00ff00" onclick="change_color('#00ff00');">&nbsp;</button>
-            <button class="color_button" style="background:red" onclick="change_color('red');">&nbsp;</button>
-            <button class="color_button" style="background:#0066ff" onclick="change_color('#0066ff');">&nbsp;</button>
-            <button class="color_button" style="background:#990099" onclick="change_color('#990099');">&nbsp;</button>
-            <button class="color_button" style="background:orange" onclick="change_color('orange');">&nbsp;</button>
-		</div>
-		<div id="panel_tools_rad">
-			<button id="rad1" class="tool_button" onclick="change_radius('1');"><div class="circle type1"></div></button>
-			<button id="rad3" class="tool_button" onclick="change_radius('3');"><div class="circle type3"></div></button>
-			<button id="rad5" class="tool_button active" onclick="change_radius('5');"><div class="circle type5"></div></button>
-			<button id="rad7" class="tool_button" onclick="change_radius('7');"><div class="circle type7"></div></button>
-			<button id="pin" class="tool_button" onclick="change_shape('pin');"><div class="pin"><img width="15px" src="https://mrbcleague.com/images/mappin.png"></div></button>
-			<button id="era" class="tool_button" onclick="change_shape('eraser');"><div class="eraser"><img width="20px" src="https://mrbcleague.com/images/eraser.png"></div></button>
-		</div>
+    <div id="leftbar" class="normalboxes">
+	<div id="panel_tools_col">
+	    <button class="action_button wipe" id="wipe"><div class="wipe">Wipe</div></button>
+	    <button class="color_button active" style="background:#ff6600" onclick="change_color('#ff6600');">&nbsp;</button>
+	    <button class="color_button" style="background:white" onclick="change_color('white');">&nbsp;</button>
+	    <button class="color_button" style="background:#00ff00" onclick="change_color('#00ff00');">&nbsp;</button>
+	    <button class="color_button" style="background:red" onclick="change_color('red');">&nbsp;</button>
+	    <button class="color_button" style="background:#0066ff" onclick="change_color('#0066ff');">&nbsp;</button>
+	    <button class="color_button" style="background:#990099" onclick="change_color('#990099');">&nbsp;</button>
+	    <button class="color_button" style="background:orange" onclick="change_color('orange');">&nbsp;</button>
 	</div>
-	<div id="rightbar">
+	<div id="panel_tools_rad">
+	    <button id="rad1" class="tool_button" onclick="change_radius('1');"><div class="circle type1"></div></button>
+	    <button id="rad3" class="tool_button" onclick="change_radius('3');"><div class="circle type3"></div></button>
+	    <button id="rad5" class="tool_button active" onclick="change_radius('5');"><div class="circle type5"></div></button>
+	    <button id="rad7" class="tool_button" onclick="change_radius('7');"><div class="circle type7"></div></button>
+	    <button id="pin" class="tool_button" onclick="change_shape('pin');"><div class="pin"><img width="15px" src="/images/mappin.png"></div></button>
+	    <button id="era" class="tool_button" onclick="change_shape('eraser');"><div class="eraser"><img width="20px" src="/images/eraser.png"></div></button>
+	</div>
+    </div>
+    <div id="rightbar">
 	<div id="panel_header" class="">
-		<div id="headtitle">
-			<a href="#" class="header header--pushDown header--shadow">MRBC MAP STRAT<span class="offwhite">v0.7</span></a>
-		</div>
-		<div id="mapselect">
-			<select id="map_select">
-				<option value="">--Select Map--</option>
-				<option value="alpinepeaks_CONQ.png">Alpine Peaks (Conquest)</option>
-				<option value="alpinepeaks_CONQ_3cap.png">Alpine Peaks (Conquest-3Cap)</option>
-				<option value="alpinepeaks_DOMI.png">Alpine Peaks (Domination)</option>
-				<option value="Canyon_Network_CONQ.png">Canyon Network (Conquest)</option>
-				<option value="Canyon_Network_CONQ_3cap.png">Canyon Network (Conquest-3Cap)</option>
-				<option value="Canyon_Network_DOMI.png">Canyon Network (Domination)</option>
-				<option value="Caustic_Valley_CONQ.png">Caustic Valley (Conquest)</option>
-				<option value="Caustic_Valley_CONQ_3cap.png">Caustic Valley (Conquest-3Cap)</option>
-				<option value="Caustic_Valley_DOMI.png">Caustic Valley (Domination)</option>
-				<option value="Crimson_Strait_CONQ.png">Crimson Strait (Conquest)</option>
-				<!--<option value="Crimson_Strait_CONQ_3cap.png">Crimson Strait (Conquest-3Cap)</option>-->
-				<option value="Crimson_Strait_DOMI.png">Crimson Strait (Domination)</option>
-				<option value="Forest_Colony_CONQ.png">Forest Colony (Conquest)</option>
-				<option value="Forest_Colony_CONQ_3cap.png">Forest Colony (Conquest-3Cap)</option>
-				<option value="Forest_Colony_DOMI.png">Forest Colony (Domination)</option>
-				<option value="Frozen_City_CONQ.png">Frozen City (Conquest)</option>
-				<option value="Frozen_City_CONQ_3cap.png">Frozen City (Conquest-3Cap)</option>
-				<option value="Frozen_City_DOMI.png">Frozen City (Domination)</option>
-				<option value="Grim_Plexus_CONQ.png">Grim Plexus (Conquest)</option>
-				<option value="Grim_Plexus_CONQ_3cap.png">Grim Plexus (Conquest-3Cap)</option>
-				<option value="Grim_Plexus_DOMI.png">Grim Plexus (Domination)</option>
-				<option value="HPG_Manifold_CONQ.png">HPG Manifold (Conquest)</option>
-				<option value="HPG_Manifold_CONQ_3cap.png">HPG Manifold (Conquest-3Cap)</option>
-				<option value="HPG_Manifold_DOMI.png">HPG Manifold (Domination)</option>
-				<option value="Mining_Collective_CONQ.png">Mining Collective (Conquest)</option>
-				<option value="Mining_Collective_CONQ_3cap.png">Mining Collective (Conquest-3Cap)</option>
-				<option value="Mining_Collective_DOMI.png">Mining Collective (Domination)</option>
-				<option value="polarhighlands_CONQ.png">Polar Highlands (Conquest)</option>
-				<option value="polarhighlands_CONQ_3cap.png">Polar Highlands (Conquest-3Cap)</option>
-				<option value="polarhighlands_DOMI.png">Polar Highlands (Domination)</option>
-				<option value="River_City_CONQ.png">River City (Conquest)</option>
-				<option value="River_City_CONQ_3cap.png">River City (Conquest-3Cap)</option>
-				<option value="River_City_DOMI.png">River City (Domination)</option>
-                                <option value="Rubellite_Oasis_CONQ.png">Rubellite Oasis (Conquest)</option>
-                                <option value="Rubellite_Oasis_CONQ_3cap.png">Rubellite Oasis (Conquest-3Cap)</option>
-				<option value="Rubellite_Oasis_DOMI.png">Rubellite Oasis (Domination)</option>
-				<option value="Terra_Therma_CONQ.png">Terra Therma (Conquest)</option>
-				<option value="Terra_Therma_CONQ_3cap.png">Terra Therma (Conquest-3Cap)</option>
-                                <option value="Terra_Therma_DOMI.png">Terra Therma (Domination)</option>
-				<option value="Tourmaline_Desert_CONQ.png">Tourmaline Desert (Conquest)</option>
-				<option value="Tourmaline_Desert_CONQ_3cap.png">Tourmaline Desert (Conquest-3Cap)</option>
-				<option value="Tourmaline_Desert_DOMI.png">Tourmaline Desert (Domination)</option>
-				<option value="Viridian_Bog_CONQ.png">Viridian Bog (Conquest)</option>
-				<option value="Viridian_Bog_CONQ_3cap.png">Viridian Bog (Conquest-3Cap)</option>
-				<option value="Viridian_Bog_DOMI.png">Viridian Bog (Domination)</option>
-				<!--<option value="CanyonConquest.png">old Canyon Network (Conquest)</option>
-				<option value="CausticConquest.png">old Caustic Valley (Conquest)</option>
-				<option value="CrimsonConquest.png">old Crimson Strait (Conquest)</option>
-				<option value="ForestConquest.png">old Forest Colony (Conquest)</option>
-				<option value="FrozenConquest.png">old Frozen City (Conquest)</option>
-				<option value="GrimConquest.png">old Grim (Conquest)</option>
-				<option value="HPGConquest.png">old HPG Manifold (Conquest)</option>
-				<option value="MiningConquest.png">old Mining Collective (Conquest)</option>
-				<option value="PolarConquest.png">old Polar Highlands (Conquest)</option>
-				<option value="RiverConquest.png">old River City (Conquest)</option>
-				<option value="TourmalineConquest.png">old Tourmaline Desert (Conquest)</option>
-				<option value="ViridianConquest.png">old Viridian Bog (Conquest)</option>-->
-			</select>
-		</div>
+	    <div id="headtitle">
+		    <a href="#" class="header header--pushDown header--shadow">MRBC MAP STRAT<span class="offwhite"></span></a>
+	    </div>
+	    <div id="mapselect">
+		<select id="map_select">
+		    <option value="">--Select Map--</option>
+		    <option value="alpinepeaks_CONQ.png">Alpine Peaks (Conquest)</option>
+		    <option value="alpinepeaks_CONQ_3cap.png">Alpine Peaks (Conquest-3Cap)</option>
+		    <option value="alpinepeaks_DOMI.png">Alpine Peaks (Domination)</option>
+		    <option value="Canyon_Network_CONQ.png">Canyon Network (Conquest)</option>
+		    <option value="Canyon_Network_CONQ_3cap.png">Canyon Network (Conquest-3Cap)</option>
+		    <option value="Canyon_Network_DOMI.png">Canyon Network (Domination)</option>
+		    <option value="Caustic_Valley_CONQ.png">Caustic Valley (Conquest)</option>
+		    <option value="Caustic_Valley_CONQ_3cap.png">Caustic Valley (Conquest-3Cap)</option>
+		    <option value="Caustic_Valley_DOMI.png">Caustic Valley (Domination)</option>
+		    <option value="Crimson_Strait_CONQ.png">Crimson Strait (Conquest)</option>
+		    <option value="Crimson_Strait_DOMI.png">Crimson Strait (Domination)</option>
+		    <option value="Forest_Colony_CONQ.png">Forest Colony (Conquest)</option>
+		    <option value="Forest_Colony_CONQ_3cap.png">Forest Colony (Conquest-3Cap)</option>
+		    <option value="Forest_Colony_DOMI.png">Forest Colony (Domination)</option>
+		    <option value="Frozen_City_CONQ.png">Frozen City (Conquest)</option>
+		    <option value="Frozen_City_CONQ_3cap.png">Frozen City (Conquest-3Cap)</option>
+		    <option value="Frozen_City_DOMI.png">Frozen City (Domination)</option>
+		    <option value="Grim_Plexus_CONQ.png">Grim Plexus (Conquest)</option>
+		    <option value="Grim_Plexus_CONQ_3cap.png">Grim Plexus (Conquest-3Cap)</option>
+		    <option value="Grim_Plexus_DOMI.png">Grim Plexus (Domination)</option>
+		    <option value="HPG_Manifold_CONQ.png">HPG Manifold (Conquest)</option>
+		    <option value="HPG_Manifold_CONQ_3cap.png">HPG Manifold (Conquest-3Cap)</option>
+		    <option value="HPG_Manifold_DOMI.png">HPG Manifold (Domination)</option>
+		    <option value="Mining_Collective_CONQ.png">Mining Collective (Conquest)</option>
+		    <option value="Mining_Collective_CONQ_3cap.png">Mining Collective (Conquest-3Cap)</option>
+		    <option value="Mining_Collective_DOMI.png">Mining Collective (Domination)</option>
+		    <option value="polarhighlands_CONQ.png">Polar Highlands (Conquest)</option>
+		    <option value="polarhighlands_CONQ_3cap.png">Polar Highlands (Conquest-3Cap)</option>
+		    <option value="polarhighlands_DOMI.png">Polar Highlands (Domination)</option>
+		    <option value="River_City_CONQ.png">River City (Conquest)</option>
+		    <option value="River_City_CONQ_3cap.png">River City (Conquest-3Cap)</option>
+		    <option value="River_City_DOMI.png">River City (Domination)</option>
+		    <option value="Rubellite_Oasis_CONQ.png">Rubellite Oasis (Conquest)</option>
+		    <option value="Rubellite_Oasis_CONQ_3cap.png">Rubellite Oasis (Conquest-3Cap)</option>
+		    <option value="Rubellite_Oasis_DOMI.png">Rubellite Oasis (Domination)</option>
+		    <option value="Terra_Therma_CONQ.png">Terra Therma (Conquest)</option>
+		    <option value="Terra_Therma_CONQ_3cap.png">Terra Therma (Conquest-3Cap)</option>
+		    <option value="Terra_Therma_DOMI.png">Terra Therma (Domination)</option>
+		    <option value="Tourmaline_Desert_CONQ.png">Tourmaline Desert (Conquest)</option>
+		    <option value="Tourmaline_Desert_CONQ_3cap.png">Tourmaline Desert (Conquest-3Cap)</option>
+		    <option value="Tourmaline_Desert_DOMI.png">Tourmaline Desert (Domination)</option>
+		    <option value="Viridian_Bog_CONQ.png">Viridian Bog (Conquest)</option>
+		    <option value="Viridian_Bog_CONQ_3cap.png">Viridian Bog (Conquest-3Cap)</option>
+		    <option value="Viridian_Bog_DOMI.png">Viridian Bog (Domination)</option>
+		</select>
+	    </div>
 	</div>
-		<div id="panel_tools_mechs_c" class="normalboxes">
-			<div class="mechheadingC"><h4>CL</h4></div>
-			<button title="ADR" id="clanlight1" class="tool_button" onclick="change_shape('clanlight1');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanlight1.png"></div></button>
-			<button title="KFX" id="clanlight2" class="tool_button" onclick="change_shape('clanlight2');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanlight2.png"></div></button>
-			<button title="MLX" id="clanlight3" class="tool_button" onclick="change_shape('clanlight3');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanlight3.png"></div></button>
-			<button title="ACH" id="clanlight4" class="tool_button spacer" onclick="change_shape('clanlight4');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanlight4.png"></div></button>
-			<button title="SCR" id="clanmed1" class="tool_button" onclick="change_shape('clanmed1');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanmed1.png"></div></button>
-			<button title="NVA" id="clanmed2" class="tool_button" onclick="change_shape('clanmed2');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanmed2.png"></div></button>
-			<button title="IFR" id="clanmed3" class="tool_button" onclick="change_shape('clanmed3');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanmed3.png"></div></button>
-			<button title="SHC" id="clanmed4" class="tool_button spacer" onclick="change_shape('clanmed4');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanmed4.png"></div></button>
-			<button title="TBR" id="clanheavy1" class="tool_button" onclick="change_shape('clanheavy1');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanheavy1.png"></div></button>
-			<button title="SMN" id="clanheavy2" class="tool_button" onclick="change_shape('clanheavy2');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanheavy2.png"></div></button>
-			<button title="HBR" id="clanheavy3" class="tool_button" onclick="change_shape('clanheavy3');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanheavy3.png"></div></button>
-			<button title="EBJ" id="clanheavy4" class="tool_button" onclick="change_shape('clanheavy4');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanheavy4.png"></div></button>
-			<button title="MDD" id="clanheavy5" class="tool_button spacer" onclick="change_shape('clanheavy5');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanheavy5.png"></div></button>
-			<button title="DWF" id="clanassault1" class="tool_button" onclick="change_shape('clanassault1');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanassault1.png"></div></button>
-			<button title="WHK" id="clanassault2" class="tool_button" onclick="change_shape('clanassault2');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanassault2.png"></div></button>
-			<button title="GAR" id="clanassault3" class="tool_button" onclick="change_shape('clanassault3');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanassault3.png"></div></button>
-			<button title="EXE" id="clanassault4" class="tool_button" onclick="change_shape('clanassault4');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/clanassault4.png"></div></button>
-		</div>
-		<div id="panel_tools_mechs_is" class="normalboxes">
-			<div class="mechheadingI"><h4>IS</h4></div>
-			<button title="LCT" id="islight1" class="tool_button" onclick="change_shape('islight1');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/islight1.png"></div></button>
-			<button title="COM" id="islight2" class="tool_button" onclick="change_shape('islight2');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/islight2.png"></div></button>
-			<button title="SDR" id="islight3" class="tool_button" onclick="change_shape('islight3');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/islight3.png"></div></button>
-			<button title="UM" id="islight4" class="tool_button" onclick="change_shape('islight4');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/islight4.png"></div></button>
-			<button title="RVN" id="islight5" class="tool_button" onclick="change_shape('islight5');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/islight5.png"></div></button>
-			<button title="PNT" id="islight6" class="tool_button" onclick="change_shape('islight6');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/islight6.png"></div></button>
-			<button title="JR7" id="islight7" class="tool_button" onclick="change_shape('islight7');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/islight7.png"></div></button>
-			<button title="FS9" id="islight8" class="tool_button spacer" onclick="change_shape('islight8');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/islight8.png"></div></button>
-			<button title="CDA" id="islight9" class="tool_button" onclick="change_shape('islight9');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/islight9.png"></div></button>
-			<button title="BJ" id="ismed1" class="tool_button" onclick="change_shape('ismed1');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/ismed1.png"></div></button>
-			<button title="VND" id="ismed2" class="tool_button" onclick="change_shape('ismed2');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/ismed2.png"></div></button>
-			<button title="CN9" id="ismed3" class="tool_button" onclick="change_shape('ismed3');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/ismed3.png"></div></button>
-			<button title="HBK" id="ismed4" class="tool_button" onclick="change_shape('ismed4');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/ismed4.png"></div></button>
-			<button title="ENF" id="ismed5" class="tool_button" onclick="change_shape('ismed5');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/ismed5.png"></div></button>
-			<button title="TBT" id="ismed6" class="tool_button" onclick="change_shape('ismed6');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/ismed6.png"></div></button>
-			<button title="KTO" id="ismed7" class="tool_button" onclick="change_shape('ismed7');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/ismed7.png"></div></button>
-			<button title="GRF" id="ismed8" class="tool_button" onclick="change_shape('ismed8');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/ismed8.png"></div></button>
-			<button title="WVR" id="ismed9" class="tool_button" onclick="change_shape('ismed9');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/ismed9.png"></div></button>
-			<button title="SHD" id="isheavy1" class="tool_button spacer" onclick="change_shape('isheavy1');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isheavy1.png"></div></button>
-			<div class="spare" ></div>	
-			<button title="DRG" id="isheavy2" class="tool_button" onclick="change_shape('isheavy2');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isheavy2.png"></div></button>
-			<button title="QKD" id="isheavy3" class="tool_button" onclick="change_shape('isheavy3');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isheavy3.png"></div></button>
-			<button title="CPLT" id="isheavy4" class="tool_button" onclick="change_shape('isheavy4');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isheavy4.png"></div></button>
-			<button title="JM6" id="isheavy5" class="tool_button" onclick="change_shape('isheavy5');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isheavy5.png"></div></button>
-			<button title="TDR" id="isheavy6" class="tool_button" onclick="change_shape('isheavy6');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isheavy6.png"></div></button>
-			<button title="CTF" id="isheavy7" class="tool_button" onclick="change_shape('isheavy7');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isheavy7.png"></div></button>
-			<button title="GHR" id="isheavy8" class="tool_button" onclick="change_shape('isheavy8');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isheavy8.png"></div></button>
-			<button title="ON1" id="isheavy9" class="tool_button spacer" onclick="change_shape('isheavy9');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isheavy9.png"></div></button>
-			<div class="spare" ></div>			
-			<button title="AWS" id="isassault1" class="tool_button" onclick="change_shape('isassault1');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isassault1.png"></div></button>
-			<button title="VTR" id="isassault2" class="tool_button" onclick="change_shape('isassault2');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isassault2.png"></div></button>
-			<button title="ZEU" id="isassault3" class="tool_button" onclick="change_shape('isassault3');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isassault3.png"></div></button>
-			<button title="BLR" id="isassault4" class="tool_button" onclick="change_shape('isassault4');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isassault4.png"></div></button>
-			<button title="STK" id="isassault5" class="tool_button" onclick="change_shape('isassault5');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isassault5.png"></div></button>
-			<button title="HGN" id="isassault6" class="tool_button" onclick="change_shape('isassault6');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isassault6.png"></div></button>
-			<button title="BNC" id="isassault7" class="tool_button" onclick="change_shape('isassault7');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isassault7.png"></div></button>
-			<button title="KGC" id="isassault8" class="tool_button" onclick="change_shape('isassault8');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isassault8.png"></div></button>
-			<button title="AS7" id="isassault9" class="tool_button" onclick="change_shape('isassault9');"><div class="mechs"><img width="20px" src="https://mrbcleague.com/images/pixelmechs/isassault9.png"></div></button>
-		</div>
+	<div id="panel_tools_mechs_c" class="normalboxes">
+	    <div class="mechheadingI"><h4>IS</h4></div>
+	    <button title="ADR" id="clanlight1" class="tool_button" onclick="change_shape('clanlight1');"><div class="mechs"><img width="20px" src="/pixelmechs/clanlight1.png"></div></button>
+	    <button title="KFX" id="clanlight2" class="tool_button" onclick="change_shape('clanlight2');"><div class="mechs"><img width="20px" src="/pixelmechs/clanlight2.png"></div></button>
+	    <button title="MLX" id="clanlight3" class="tool_button" onclick="change_shape('clanlight3');"><div class="mechs"><img width="20px" src="/pixelmechs/clanlight3.png"></div></button>
+	    <button title="ACH" id="clanlight4" class="tool_button spacer" onclick="change_shape('clanlight4');"><div class="mechs"><img width="20px" src="/pixelmechs/clanlight4.png"></div></button>
+	    <button title="SCR" id="clanmed1" class="tool_button" onclick="change_shape('clanmed1');"><div class="mechs"><img width="20px" src="/pixelmechs/clanmed1.png"></div></button>
+	    <button title="NVA" id="clanmed2" class="tool_button" onclick="change_shape('clanmed2');"><div class="mechs"><img width="20px" src="/pixelmechs/clanmed2.png"></div></button>
+	    <button title="IFR" id="clanmed3" class="tool_button" onclick="change_shape('clanmed3');"><div class="mechs"><img width="20px" src="/pixelmechs/clanmed3.png"></div></button>
+	    <button title="SHC" id="clanmed4" class="tool_button spacer" onclick="change_shape('clanmed4');"><div class="mechs"><img width="20px" src="/pixelmechs/clanmed4.png"></div></button>
+	    <button title="TBR" id="clanheavy1" class="tool_button" onclick="change_shape('clanheavy1');"><div class="mechs"><img width="20px" src="/pixelmechs/clanheavy1.png"></div></button>
+	    <button title="SMN" id="clanheavy2" class="tool_button" onclick="change_shape('clanheavy2');"><div class="mechs"><img width="20px" src="/pixelmechs/clanheavy2.png"></div></button>
+	    <button title="HBR" id="clanheavy3" class="tool_button" onclick="change_shape('clanheavy3');"><div class="mechs"><img width="20px" src="/pixelmechs/clanheavy3.png"></div></button>
+	    <button title="EBJ" id="clanheavy4" class="tool_button" onclick="change_shape('clanheavy4');"><div class="mechs"><img width="20px" src="/pixelmechs/clanheavy4.png"></div></button>
+	    <button title="MDD" id="clanheavy5" class="tool_button spacer" onclick="change_shape('clanheavy5');"><div class="mechs"><img width="20px" src="/pixelmechs/clanheavy5.png"></div></button>
+	    <button title="DWF" id="clanassault1" class="tool_button" onclick="change_shape('clanassault1');"><div class="mechs"><img width="20px" src="/pixelmechs/clanassault1.png"></div></button>
+	    <button title="WHK" id="clanassault2" class="tool_button" onclick="change_shape('clanassault2');"><div class="mechs"><img width="20px" src="/pixelmechs/clanassault2.png"></div></button>
+	    <button title="CAR" id="clanassault3" class="tool_button" onclick="change_shape('clanassault3');"><div class="mechs"><img width="20px" src="/pixelmechs/clanassault3.png"></div></button>
+	    <button title="EXE" id="clanassault4" class="tool_button" onclick="change_shape('clanassault4');"><div class="mechs"><img width="20px" src="/pixelmechs/clanassault4.png"></div></button>
 	</div>
-	<div id="wrapper" class="wrapper">
-		<canvas id="canvasback" width="950" height="950"></canvas>
-		<canvas id="canvas" width="950" height="950"></canvas>
-		<canvas id="canvaspin" width="950" height="950"></canvas>
+	<div id="panel_tools_mechs_is" class="normalboxes">
+	    <div class="mechheadingC"><h4>CLAN</h4></div>
+	    <button title="LCT" id="islight1" class="tool_button" onclick="change_shape('islight1');"><div class="mechs"><img width="20px" src="/pixelmechs/islight1.png"></div></button>
+	    <button title="COM" id="islight2" class="tool_button" onclick="change_shape('islight2');"><div class="mechs"><img width="20px" src="/pixelmechs/islight2.png"></div></button>
+	    <button title="SDR" id="islight3" class="tool_button" onclick="change_shape('islight3');"><div class="mechs"><img width="20px" src="/pixelmechs/islight3.png"></div></button>
+	    <button title="UM" id="islight4" class="tool_button" onclick="change_shape('islight4');"><div class="mechs"><img width="20px" src="/pixelmechs/islight4.png"></div></button>
+	    <button title="RVN" id="islight5" class="tool_button" onclick="change_shape('islight5');"><div class="mechs"><img width="20px" src="/pixelmechs/islight5.png"></div></button>
+	    <button title="PNT" id="islight6" class="tool_button" onclick="change_shape('islight6');"><div class="mechs"><img width="20px" src="/pixelmechs/islight6.png"></div></button>
+	    <button title="JR7" id="islight7" class="tool_button" onclick="change_shape('islight7');"><div class="mechs"><img width="20px" src="/pixelmechs/islight7.png"></div></button>
+	    <button title="FS9" id="islight8" class="tool_button" onclick="change_shape('islight8');"><div class="mechs"><img width="20px" src="/pixelmechs/islight8.png"></div></button>
+	    <button title="CDA" id="islight9" class="tool_button spacer" onclick="change_shape('islight9');"><div class="mechs"><img width="20px" src="/pixelmechs/islight9.png"></div></button>
+	    <div class="spare" ></div>      
+	    <button title="BJ" id="ismed1" class="tool_button" onclick="change_shape('ismed1');"><div class="mechs"><img width="20px" src="/pixelmechs/ismed1.png"></div></button>
+	    <button title="VND" id="ismed2" class="tool_button" onclick="change_shape('ismed2');"><div class="mechs"><img width="20px" src="/pixelmechs/ismed2.png"></div></button>
+	    <button title="CN9" id="ismed3" class="tool_button" onclick="change_shape('ismed3');"><div class="mechs"><img width="20px" src="/pixelmechs/ismed3.png"></div></button>
+	    <button title="HBK" id="ismed4" class="tool_button" onclick="change_shape('ismed4');"><div class="mechs"><img width="20px" src="/pixelmechs/ismed4.png"></div></button>
+	    <button title="ENF" id="ismed5" class="tool_button" onclick="change_shape('ismed5');"><div class="mechs"><img width="20px" src="/pixelmechs/ismed5.png"></div></button>
+	    <button title="TBT" id="ismed6" class="tool_button" onclick="change_shape('ismed6');"><div class="mechs"><img width="20px" src="/pixelmechs/ismed6.png"></div></button>
+	    <button title="KTD" id="ismed7" class="tool_button" onclick="change_shape('ismed7');"><div class="mechs"><img width="20px" src="/pixelmechs/ismed7.png"></div></button>
+	    <button title="GRF" id="ismed8" class="tool_button" onclick="change_shape('ismed8');"><div class="mechs"><img width="20px" src="/pixelmechs/ismed8.png"></div></button>
+	    <button title="WDR" id="ismed9" class="tool_button spacer" onclick="change_shape('ismed9');"><div class="mechs"><img width="20px" src="/pixelmechs/ismed9.png"></div></button>
+	    <div class="spare" ></div>      
+	    <button title="SHD" id="isheavy1" class="tool_button" onclick="change_shape('isheavy1');"><div class="mechs"><img width="20px" src="/pixelmechs/isheavy1.png"></div></button>
+	    <button title="DRG" id="isheavy2" class="tool_button" onclick="change_shape('isheavy2');"><div class="mechs"><img width="20px" src="/pixelmechs/isheavy2.png"></div></button>
+	    <button title="QKD" id="isheavy3" class="tool_button" onclick="change_shape('isheavy3');"><div class="mechs"><img width="20px" src="/pixelmechs/isheavy3.png"></div></button>
+	    <button title="CPLT" id="isheavy4" class="tool_button" onclick="change_shape('isheavy4');"><div class="mechs"><img width="20px" src="/pixelmechs/isheavy4.png"></div></button>
+	    <button title="JMG" id="isheavy5" class="tool_button" onclick="change_shape('isheavy5');"><div class="mechs"><img width="20px" src="/pixelmechs/isheavy5.png"></div></button>
+	    <button title="TDR" id="isheavy6" class="tool_button" onclick="change_shape('isheavy6');"><div class="mechs"><img width="20px" src="/pixelmechs/isheavy6.png"></div></button>
+	    <button title="CTF" id="isheavy7" class="tool_button" onclick="change_shape('isheavy7');"><div class="mechs"><img width="20px" src="/pixelmechs/isheavy7.png"></div></button>
+	    <button title="GHR" id="isheavy8" class="tool_button" onclick="change_shape('isheavy8');"><div class="mechs"><img width="20px" src="/pixelmechs/isheavy8.png"></div></button>
+	    <button title="DN1" id="isheavy9" class="tool_button spacer" onclick="change_shape('isheavy9');"><div class="mechs"><img width="20px" src="/pixelmechs/isheavy9.png"></div></button>
+	    <div class="spare" ></div>                      
+	    <button title="AWS" id="isassault1" class="tool_button" onclick="change_shape('isassault1');"><div class="mechs"><img width="20px" src="/pixelmechs/isassault1.png"></div></button>
+	    <button title="VTR" id="isassault2" class="tool_button" onclick="change_shape('isassault2');"><div class="mechs"><img width="20px" src="/pixelmechs/isassault2.png"></div></button>
+	    <button title="ZEU" id="isassault3" class="tool_button" onclick="change_shape('isassault3');"><div class="mechs"><img width="20px" src="/pixelmechs/isassault3.png"></div></button>
+	    <button title="BLR" id="isassault4" class="tool_button" onclick="change_shape('isassault4');"><div class="mechs"><img width="20px" src="/pixelmechs/isassault4.png"></div></button>
+	    <button title="STK" id="isassault5" class="tool_button" onclick="change_shape('isassault5');"><div class="mechs"><img width="20px" src="/pixelmechs/isassault5.png"></div></button>
+	    <button title="HGN" id="isassault6" class="tool_button" onclick="change_shape('isassault6');"><div class="mechs"><img width="20px" src="/pixelmechs/isassault6.png"></div></button>
+	    <button title="BNC" id="isassault7" class="tool_button" onclick="change_shape('isassault7');"><div class="mechs"><img width="20px" src="/pixelmechs/isassault7.png"></div></button>
+	    <button title="KGC" id="isassault8" class="tool_button" onclick="change_shape('isassault8');"><div class="mechs"><img width="20px" src="/pixelmechs/isassault8.png"></div></button>
+	    <button title="AS7" id="isassault9" class="tool_button" onclick="change_shape('isassault9');"><div class="mechs"><img width="20px" src="/pixelmechs/isassault9.png"></div></button>
 	</div>
-	<!--<h3 class="offwhite">Notes</h3>
-	<textarea id="notes"></textarea>-->
+    </div>
+    <div id="wrapper" class="wrapper">
+	<canvas id="canvasback" width="950" height="950"></canvas>
+	<canvas id="canvas" width="950" height="950"></canvas>
+	<canvas id="canvaspin" width="950" height="950"></canvas>
+    </div>
 </div>
 <br>
 </body>
