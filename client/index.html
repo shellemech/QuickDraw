@@ -20,9 +20,11 @@
 	<a href="#" class="header header--pushDown header--shadow">MRBC Map Strat</a><br />
 	<p class="subt">A collaborative map strategy app for Mechwarrior Online.</p><br /><br /><br />
 	<p class="instructions">Enter the name below to join an existing session, or type a new name to create a new room:</p><br />
-	<input id="txt_room" class="codebox" value="" /><br />
-	<div id="empty_msg"><span class="red" ><br />Enter a room name...</span></div>
-	<button id="btn_connect">Connect</button>
+	<form id="room" method="post">
+		<input name="txt_room" id="txt_room" class="codebox" value="" /><br />
+		<div id="empty_msg"><span class="red" ><br />Enter a room name...</span></div>
+		<input type="submit" id="btn_connect" value="Connect">
+	</form>
 </div>
 <div id="ver"> v1.0</div>
 <div id="footer">

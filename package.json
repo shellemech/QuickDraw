@@ -9,8 +9,11 @@
   "author": "ShelleMech",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "colors": "^1.0.3",
     "express": "^4.11.2",
+    "express-validator": "^5.3.0",
+    "helmet": "^3.15.0",
     "node-twitter": "^0.5.2",
     "socket.io": "^1.3.3"
   }
