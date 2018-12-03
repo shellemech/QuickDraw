@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+<!-- client/index.ejs -->
+<!DOCTYPE html>
 
 <html lang="en">
 <head>
@@ -18,7 +19,7 @@
 	<a href="#" class="header header--pushDown header--shadow">MRBC Map Strat</a><br />
 	<p class="subt">A collaborative map strategy app for Mechwarrior Online.</p><br /><br /><br />
 	<p class="instructions">Enter the name below to join an existing session, or type a new name to create a new room:</p><br />
-	<form id="room" method="post">
+	<form id="room" method="post" action="/new">
 		<input name="txt_room" id="txt_room" class="codebox" value="" /><br />
 		<div id="empty_msg"><span class="red" ><br />Enter a room name...</span></div>
 		<input class="formButton" type="submit" id="btn_connect" value="Connect">

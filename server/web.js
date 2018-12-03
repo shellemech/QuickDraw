@@ -1,6 +1,5 @@
 ﻿//Configurations
 var PORT = 3001;
-var DEFAULT_PAGE = "/index.html";
 var HOST = 'localhost';
 
 //Setup
@@ -14,35 +13,57 @@ app.use(helmet());
 app.use(express.static('client'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '../client'))
 
 var options = {
 	dotfiles: 'ignore',
 	etag: false,
 	extensions: ['htm', 'html', 'js', 'css', 'png', 'jpg'],
-	index: DEFAULT_PAGE,
-	root: __dirname + '/client/',
 	maxAge: '1d',
 	redirect: false,
 	setHeaders: function (res, path, stat) {
-		res.set('x-timestamp', Date.now())
+	res.set('x-timestamp', Date.now())
 	}
 };
-
+var regx = /[!@£#€$%^&*(){}"'|~;:]/g
 var server = http.createServer(app);
 var io = require('socket.io')(server);
 
 //Routes
 
-app.post('/', function (req, res) {
-	var room = req.body.txt_room;
-	var cleanroom = room.replace(/[|&;$%@"<>()+,]/g, "");
-        res.redirect('/draw.html?room=' + cleanroom);
+app.get('/', function(req, res) {
+    res.render('index');
+});
+
+app.get('/new', function(req, res) {
+    res.render('index');
+});
+
+//New room
+app.post('/new', function (req, res, next) {
+	  var roomid = req.body.txt_room;
+	  var cleanroom = roomid.replace(regx, "");
+    req.room = cleanroom;
+    res.redirect('/draw/'+cleanroom);
+});
+
+//Existing room
+app.get('/draw/:roomid', function (req, res) {
+	var roomid = req.params.roomid;
+	var cleanroom = roomid.replace(regx, "");
+	if (roomid != cleanroom) {
+		res.redirect('/draw/'+cleanroom);
+	}
+	else {
+	  res.render('draw', {room:cleanroom});
+	}
 });
 
 //Start
 exports.start = function () {
 	server.listen(PORT, HOST, function() {
-		console.log('server up and running at %s port', PORT);
+		console.log('Server up and running at %s port', PORT);
 	});
 
 	exports.app = app;

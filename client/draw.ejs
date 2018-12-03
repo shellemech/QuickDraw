@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+<!-- client/draw.ejs -->
+<!DOCTYPE html>
 
 <html lang="en">
 <head>
@@ -15,12 +16,23 @@
 <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.1/jquery.qtip.min.js"></script>
 <script src="/scripts/draw.js"></script>
+<script src="/scripts/client.js"></script>
 </head>
 
 <body>
 <br>
 <div class="normalboxes" id="pagebox">
-    <div id="leftbar" class="normalboxes">
+  <div id="topbar">
+    <div id="roomtitle">
+      <h3>Room name: <%= room %></h3>
+      <input id="roomid" type="hidden" value="<%= room %>"></input>
+    </div>
+    <div id="headtitle">
+      <a href="#" class="header header--pushDown header--shadow">MRBC MAP STRAT<span class="offwhite"></span></a>
+    </div>
+  </div>
+  <div style="clear: both;"></div>
+  <div id="leftbar" class="normalboxes">
 	<div id="panel_tools_col">
 	    <button class="action_button wipe" id="wipe"><div class="wipe">Wipe</div></button>
 	    <button class="color_button active" style="background:#ff6600" onclick="change_color('#ff6600');">&nbsp;</button>
@@ -39,12 +51,13 @@
 	    <button id="pin" class="tool_button" onclick="change_shape('pin');"><div class="pin"><img width="15px" src="/images/mappin.png"></div></button>
 	    <button id="era" class="tool_button" onclick="change_shape('eraser');"><div class="eraser"><img width="20px" src="/images/eraser.png"></div></button>
 	</div>
+  <div id="panel_tools_new_close">
+      <button class="action_button new" id="new"><div class="wipe">New Room</div></button>
+      <button class="action_button close" id="close"><div class="wipe">Close Room</div></button>
+  </div>
     </div>
     <div id="rightbar">
 	<div id="panel_header" class="">
-	    <div id="headtitle">
-		    <a href="#" class="header header--pushDown header--shadow">MRBC MAP STRAT<span class="offwhite"></span></a>
-	    </div>
 	    <div id="mapselect">
 		<select id="map_select">
 		    <option value="">--Select Map--</option>

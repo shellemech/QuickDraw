@@ -55,10 +55,16 @@
 		border-radius: 8px;
 	}
 
-	input[type=submit]:hover, input[type=reset]:hover, input[type=button]:hover {
+	input[type=submit]:hover, input[type=reset]:hover, input[type=button]:hover, button:hover {
 		background-color: #dcdcdc;
 		color: #d6d6d6;
 		border: 1px solid #505050;
+		cursor: pointer;
+	}
+
+	select:hover {
+		color: #d6d6d6;
+		border: 2px solid #505050;
 		cursor: pointer;
 	}
 
@@ -71,18 +77,18 @@
 	}
 
 	.red {
-		color: #B43030;    
+		color: #B43030;
 	}
 
 	.yel {
-		color: #dab526;    
+		color: #dab526;
 	}
 
 	.header {
 		display: inline-block;
 		text-decoration: none;
-		font-size: 30px; 
-		font-family: 'Wallpoet', cursive; 
+		font-size: 30px;
+		font-family: 'Wallpoet', cursive;
 		text-transform:uppercase;
 		text-shadow: 1.5px 1.5px 0 #4d4d4d, -1.5px -1.5px 0 #4d4d4d, -1.5px -1.5px 0 #4d4d4d, -1.5px 1.5px 0 #4d4d4d, 1.5px -1.5px 0 #4d4d4d;
 		transition: all 400ms ease-in-out;
@@ -156,7 +162,6 @@
 		position:absolute;
 		bottom: 1em;
 		width:100%;
-
 	}
 
 	#footertext {
@@ -193,4 +198,3 @@
 	::-webkit-scrollbar-thumb {
 		background-color: #1a1a1a;
 	}
-

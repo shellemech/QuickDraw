@@ -1,6 +1,6 @@
 body, canvas {
 	margin:0;
-	padding:0; 
+	padding:0;
 }
 #pagebox {
 	width: 1350px;
@@ -12,9 +12,10 @@ body, canvas {
 	position: relative;
 	top: -12px;
 	left: 60px;
-	width: 950px;
+	width: 940px;
 	height: 950px;
-}  
+	margin: 15px;
+}
 #canvas, #canvasback, #canvaspin {
 	width: 100%;
 	height: 100%;
@@ -22,6 +23,12 @@ body, canvas {
 	top: 0px;
 	left: 0px;
 	cursor: url("/images/marker-cur.png") 5 20, crosshair;
+}
+#roomtitle {
+	float: left;
+}
+#headtitle {
+	float: right;
 }
 #leftbar {
 	float: left;
@@ -55,7 +62,7 @@ body, canvas {
 	margin: 2px;
 }
 .mechheadingC {
-	width: 24px;
+	width: 50px;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -66,15 +73,19 @@ body, canvas {
 }
 #panel_header {
 	padding: 2px;
+	padding-left: 25px;
 	width: 100%;
 	height: 80px;
-	float:right;
 }
 #panel_header.normalboxes{
 	border:none;
 	background: rgba(41,41,41,0.8) none;
 }
 #panel_tools_col {
+	float: left;
+	padding: 3px;
+}
+#panel_tools_new_close {
 	float: left;
 	padding: 3px;
 }
@@ -91,8 +102,8 @@ body, canvas {
 #mapselect {
 	padding-right:5px;
 }
-#map_select { 
-	width: 360px;
+#map_select {
+	width: 340px;
 	height:30px;
 	font-family: Wallpoet;
 	font-size:16px;
@@ -113,19 +124,19 @@ button {
 	background: -moz-linear-gradient(#3b3b3b,#303030);
 	background: linear-gradient(#3b3b3b,#303030);
 }
-.wipe {
-	color: #dab926;  
+.wipe, .new, .close {
+	color: #dab926;
 	font-size: 15px;
 	padding-left:0px;
 }
-#wipe {
+#wipe, #new, #close {
 	padding-left: 0px;
 	margin-top: 5px;
 	margin-left: -8px;
 	margin-bottom: 10px;
 	width: 60px;
 	height: 50px;
-}    
+}
 .circle {
 	border-radius: 50%;
 	margin: 0 auto;
@@ -161,8 +172,8 @@ button {
 	width:40px;
 }
 #notes {
-	margin-top: 2px; 
-	margin-bottom: 2px; 
+	margin-top: 2px;
+	margin-bottom: 2px;
 	height: 100px;
 	width: 1016px;
 }

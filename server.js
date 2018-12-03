@@ -4,35 +4,32 @@ web.start();
 
 //Main logic
 var socket;
-var rooms = [];
-var roomIds = {};
+var roomData = [];
+var roomObj = {};
 
-// get entire room including data points and map
-function getRoom(roomId)
+//Add roomObj and initialise empty roomData array if new room
+//Return the room data array for given room
+function getRoom(room)
 {
-    if (!(roomId in roomIds))
+    if (!(room in roomObj))
     {
-        roomIds[roomId] = rooms.length;
-        rooms.push([]);
+        roomObj[room] = roomData.length;
+        roomData.push([]);
+        console.log("===> Room " + room + " created on " + new Date())
     }
-    return rooms[roomIds[roomId]];
+    return roomData[roomObj[room]];
 }
 
-//send room back to client
-function sendRoom(roomId)
-{
-    web.io.emit("servermessage", {
-        "room": roomId,
-        "command": "send_room",
-        "data": getRoom(roomId)
-    });
-}
-
-//add data points (if not the pin type) to the room array
+//Get room data array
+//Add data object (if not the pin type) to the array
+//Broadcast object
 function draw(msg)
 {
-    var room = getRoom(msg["room"]);
-    if (msg["data"]['shape'] != "pin") room.push(msg["data"]);
+    var thisData = getRoom(msg["room"]);
+    if (msg["data"]['shape'] != "pin")
+    {
+      thisData.push(msg["data"]);
+    }
     web.io.emit("servermessage", {
         "room": msg["room"],
         "command": "draw",
@@ -40,11 +37,13 @@ function draw(msg)
     });
 }
 
-//add map to room array
+//Get room data array
+//Add map to the array
+//Broadcast map
 function map(msg)
 {
-    var room = getRoom(msg["room"]);
-    room.push(msg["mapURL"]);
+    var thisData = getRoom(msg["room"]);
+    thisData.push(msg["mapURL"]);
     web.io.emit("servermessage", {
         "room": msg["room"],
         "command": "send_map",
@@ -52,25 +51,53 @@ function map(msg)
     });
 }
 
-//clear room data array
+//Get room data array
+//Remove each object
+//Broadcast command
 function clear(msg)
 {
-    var room = getRoom(msg["room"]);
-    while (room.length) {
-		room.pop();
-	}
+    var thisData = getRoom(msg["room"]);
+    while (thisData.length) {
+		  thisData.pop();
+	  }
     web.io.emit("servermessage", {
         "room": msg["room"],
         "command": "clear"
     });
 }
 
-function join(msg)
+//Get room data array
+//Remove each object
+//Remove room
+//Broadcast command
+function destroy(msg)
 {
-    console.log("Client wants to join " + msg["room"]);
-    sendRoom(msg["room"]);
+    var thisData = getRoom(msg["room"]);
+    while (thisData.length) {
+		  thisData.pop();
+	  }
+    delete roomObj[msg["room"]];
+    console.log(roomObj);
+    web.io.emit("servermessage", {
+        "room": msg["room"],
+        "command": "destroy"
+    });
 }
 
+//Client wants to see the room
+//Broadcast roomData
+function join(msg)
+{
+    console.log("----> Client joining " + msg["room"]);
+    web.io.emit("servermessage", {
+        "room": msg["room"],
+        "command": "send_room",
+        "data": getRoom(msg["room"])
+    });
+}
+
+
+//Deal with incoming updates
 function handleMessage(msg)
 {
     try
@@ -83,7 +110,8 @@ function handleMessage(msg)
         if (msg["command"] == "draw") draw(msg);
         if (msg["command"] == "join") join(msg);
         if (msg["command"] == "clear") clear(msg);
-		if (msg["command"] == "map") map(msg);
+		    if (msg["command"] == "map") map(msg);
+        if (msg["command"] == "destroy") destroy(msg);
     }
     catch (err)
     {
@@ -92,6 +120,6 @@ function handleMessage(msg)
 }
 
 web.io.on('connection', function (socket) {
-    //console.log((new Date()) + ' Connection established.');
+    console.log((new Date()) + ' Connection established.');
     socket.on("message", handleMessage);
 });
