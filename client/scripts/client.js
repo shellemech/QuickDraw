@@ -83,7 +83,7 @@ function get_draw(draw_data)
 		mechImg.onload = function () {
 			context.drawImage(mechImg, draw_data["x"]-5, draw_data["y"]-20, 55, 70);
 		}
-		mechImg.src = "/images/pixelmechs/"+thisshape+".png";
+		mechImg.src = "/pixelmechs/"+thisshape+".png";
 	}
 	if (/^is/.test(thisshape))
 	{
@@ -93,12 +93,11 @@ function get_draw(draw_data)
 		mechImg.onload = function () {
 			context.drawImage(mechImg, draw_data["x"]-5, draw_data["y"]-20, 55, 70);
 		}
-		mechImg.src = "/images/pixelmechs/"+thisshape+".png";
+		mechImg.src = "/pixelmechs/"+thisshape+".png";
 	}
 
 
 }
-
 
 
 // Updates - room is given map to draw to canvasback, drowdown updated

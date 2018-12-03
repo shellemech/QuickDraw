@@ -22,7 +22,6 @@
 
 	$('#close').click(function(){
 		destroy_room();
-		//window.location.href = '/new';
 	});
 
 	//button highlight

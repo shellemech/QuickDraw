@@ -15,7 +15,9 @@ function getRoom(room)
     {
         roomObj[room] = roomData.length;
         roomData.push([]);
-        console.log("===> Room " + room + " created on " + new Date())
+        console.log("===> Room " + room + " created on " + new Date());
+        console.log("Current rooms:" );
+        console.log(roomObj);
     }
     return roomData[roomObj[room]];
 }
@@ -77,7 +79,6 @@ function destroy(msg)
 		  thisData.pop();
 	  }
     delete roomObj[msg["room"]];
-    console.log(roomObj);
     web.io.emit("servermessage", {
         "room": msg["room"],
         "command": "destroy"
